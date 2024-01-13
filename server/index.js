@@ -2,8 +2,9 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs } from './schema.js';
 import { createClient } from '@supabase/supabase-js'
-// import dotenv from 'dotenv';
-// dotenv.config()
+import dotenv from 'dotenv';
+import crypto from 'crypto'
+dotenv.config()
 const supabaseUrl = process.env.SUPABASE_URL
 const supabase = createClient(supabaseUrl, process.env.SUPABASE_KEY)
 const resolvers={
@@ -37,6 +38,20 @@ const resolvers={
                 return err
              }
           },
+          async  generateApiKey(){
+            try{
+                const key= crypto.randomUUID();
+                const { data, error } = await supabase.from('Keys').insert([{'key':key}]).select()
+                if(error){
+                    throw error.message
+                }
+                return data[0]
+            }
+            catch(err){
+                console.log(err)
+                return err
+            }
+           }
     },
     Mutation:{
        async addUser(_,args){
@@ -68,7 +83,8 @@ const resolvers={
             console.log(err)
             return err
         }
-       }
+       },
+      
     }
    
 }

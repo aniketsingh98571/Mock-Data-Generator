@@ -7,14 +7,18 @@ export const typeDefs=`#graphql
         socials:[String!]
         occupation:String!
     }
+    type ApiKey{
+        key:String
+    }
     type Query{
         users(range:Int!): [User]
         user(id:ID!):User
+        generateApiKey:ApiKey
     }
-    type Mutation{
+   type Mutation{
         addUser(user:AddUserInput!):User
         updateUser(id:ID!,user:EditUserInput!):User
-    }
+     }
     input AddUserInput{
         name:String!,
         profile_pic:String!

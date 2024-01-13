@@ -13,3 +13,5 @@ schema={
 # post a user.
 # For sending the user list, we can make use of pagination.
 # some warnings also, like your data will be public, so make sure to enter  proper information
+# working URL - https://ruby-precious-moth.cyclic.app
+# initially we will make a repo consisting of readme.md there, we can document our API calls,and the required data, then we can invite people to collaborate for further app increase like making frontend
