@@ -2,8 +2,8 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs } from './schema.js';
 import { createClient } from '@supabase/supabase-js'
-import dotenv from 'dotenv';
-dotenv.config()
+// import dotenv from 'dotenv';
+// dotenv.config()
 const supabaseUrl = process.env.SUPABASE_URL
 const supabase = createClient(supabaseUrl, process.env.SUPABASE_KEY)
 const resolvers={
