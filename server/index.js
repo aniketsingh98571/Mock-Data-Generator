@@ -9,23 +9,66 @@ const supabase = createClient(supabaseUrl, process.env.SUPABASE_KEY)
 const resolvers={
     Query:{
        async users(_,args){
-             let { data: User, error } = await supabase.from('User').select('*').range(0, Number(args.range))
-             console.log(User)
-             return User
-        },
-       async user(_,args){
-            let { data: User, error } = await supabase.from('User').select("*").eq('id',Number(args.id))
-            console.log(User,"Single User")
-            return User[0]
-        },
-    },
-    Mutation:{
-        addUser(_,args){
+            try{
+                let { data: User, error } = await supabase.from('User').select('*').range(0, Number(args.range))
+                if(error){
+                    throw error.message
+                }
+                console.log(User)
+                return User
+            }
+            catch(err){
+                console.log(err)
+                return err
+            }
            
         },
-        updateUser(_,args){
-            
+       async user(_,args){
+            try{
+                let { data: User, error } = await supabase.from('User').select("*").eq('id',Number(args.id))
+                if(error){
+                    throw error.message
+                }
+                console.log(User,"Single User")
+                return User[0]
+             }
+             catch(err){
+                console.log(err)
+                return err
+             }
+          },
+    },
+    Mutation:{
+       async addUser(_,args){
+        const tempData={...args.user,profile_pic:"https://i.pravatar.cc/48?u=118836"}
+        try{
+            const { data, error } = await supabase.from('User').insert([tempData]).select()
+            if(error){
+                throw error.message
+            }
+            console.log(data)
+            return data[0]
+         }
+        catch(err){
+            console.log(err)
+            return err
         }
+       
+       },
+       async updateUser(_,args){
+        try{
+            const { data, error } = await supabase.from('User').update(args.user).eq('id', args.id).select()
+            if(error){
+                throw error.message
+            }
+            console.log(data)
+            return data[0]
+        }
+        catch(err){
+            console.log(err)
+            return err
+        }
+       }
     }
    
 }

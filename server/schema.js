@@ -16,7 +16,6 @@ export const typeDefs=`#graphql
         updateUser(id:ID!,user:EditUserInput!):User
     }
     input AddUserInput{
-        id:ID!,
         name:String!,
         profile_pic:String!
         title:String!
@@ -24,9 +23,9 @@ export const typeDefs=`#graphql
         occupation:String!
     }
     input EditUserInput{
-        name:String!
-        title:String!
-        occupation:String!
+        name:String
+        title:String
+        occupation:String
         socials:[String!]
     }
 `
