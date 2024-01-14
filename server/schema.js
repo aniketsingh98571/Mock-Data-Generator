@@ -11,25 +11,28 @@ export const typeDefs=`#graphql
         key:String
     }
     type Query{
-        users(range:Int!): [User]
-        user(id:ID!):User
+        users(range:Int!,key:String!): [User]
+        user(id:ID!,key:String!):User
         generateApiKey:ApiKey
     }
    type Mutation{
-        addUser(user:AddUserInput!):User
-        updateUser(id:ID!,user:EditUserInput!):User
+        addUser(user:AddUserInput!,key:String!):User
+        updateUser(id:ID!,user:EditUserInput!,key:String!):User
      }
+   type Error {
+        message: String
+    }
     input AddUserInput{
         name:String!,
         profile_pic:String!
         title:String!
         socials:[String!]
         occupation:String!
-    }
+      }
     input EditUserInput{
         name:String
         title:String
         occupation:String
         socials:[String!]
-    }
+   }
 `

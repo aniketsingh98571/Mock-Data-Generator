@@ -3,20 +3,41 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs } from './schema.js';
 import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv';
+import { GraphQLError } from 'graphql';
 import crypto from 'crypto'
-dotenv.config()
+// dotenv.config()
 const supabaseUrl = process.env.SUPABASE_URL
 const supabase = createClient(supabaseUrl, process.env.SUPABASE_KEY)
+const checkApiKey=async(key)=>{
+    let { data: Keys, error } = await supabase.from('Keys').select("*").eq('key', key)
+    console.log(Keys,"keys")
+    if(Keys.length>0){
+        return true
+    }
+    else
+        return false
+ }
 const resolvers={
     Query:{
        async users(_,args){
             try{
-                let { data: User, error } = await supabase.from('User').select('*').range(0, Number(args.range))
-                if(error){
-                    throw error.message
+                const keyResults = await checkApiKey(args.key)
+                console.log(keyResults,"results")
+                if(keyResults){
+                    let { data: User, error } = await supabase.from('User').select('*').range(0, Number(args.range))
+                    if(error){
+                        throw new GraphQLError(error.message, {
+                            extensions: { code: '500' },
+                          });
+                    }
+                    console.log(User)
+                    return User
                 }
-                console.log(User)
-                return User
+                else {
+                    throw new GraphQLError("Invalid API Key", {
+                        extensions: { code: '403' },
+                      });
+                }
             }
             catch(err){
                 console.log(err)
@@ -26,12 +47,22 @@ const resolvers={
         },
        async user(_,args){
             try{
-                let { data: User, error } = await supabase.from('User').select("*").eq('id',Number(args.id))
-                if(error){
-                    throw error.message
-                }
-                console.log(User,"Single User")
-                return User[0]
+                const keyResults = await checkApiKey(args.key)
+                if(keyResults){
+                    let { data: User, error } = await supabase.from('User').select("*").eq('id',Number(args.id))
+                    if(error){
+                        throw new GraphQLError(error.message, {
+                            extensions: { code: '500' },
+                        });
+                    }
+                    console.log(User,"Single User")
+                    return User[0]
+               }
+             else{
+                throw new GraphQLError("Invalid API Key", {
+                    extensions: { code: '403' },
+                  });
+            }
              }
              catch(err){
                 console.log(err)
@@ -43,7 +74,9 @@ const resolvers={
                 const key= crypto.randomUUID();
                 const { data, error } = await supabase.from('Keys').insert([{'key':key}]).select()
                 if(error){
-                    throw error.message
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: '500' },
+                      });
                 }
                 return data[0]
             }
@@ -55,15 +88,25 @@ const resolvers={
     },
     Mutation:{
        async addUser(_,args){
-        const tempData={...args.user,profile_pic:"https://i.pravatar.cc/48?u=118836"}
-        try{
-            const { data, error } = await supabase.from('User').insert([tempData]).select()
-            if(error){
-                throw error.message
-            }
-            console.log(data)
-            return data[0]
-         }
+       try{
+            const keyResults = await checkApiKey(args.key)
+            if(keyResults){
+                const tempData={...args.user,profile_pic:"https://i.pravatar.cc/48?u=118836"}
+                const { data, error } = await supabase.from('User').insert([tempData]).select()
+                if(error){
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: '500' },
+                    });
+                }
+                console.log(data)
+                return data[0]
+          }
+         else{
+            throw new GraphQLError("Invalid API Key", {
+                extensions: { code: '403' },
+              });
+        }
+        }
         catch(err){
             console.log(err)
             return err
@@ -72,19 +115,27 @@ const resolvers={
        },
        async updateUser(_,args){
         try{
+            const keyResults = await checkApiKey(args.key)
+            if(keyResults){
             const { data, error } = await supabase.from('User').update(args.user).eq('id', args.id).select()
             if(error){
-                throw error.message
+                throw new GraphQLError(error.message, {
+                    extensions: { code: '500' },
+                  });
             }
             console.log(data)
             return data[0]
+        }else{
+            throw new GraphQLError("Invalid API Key", {
+                extensions: { code: '403' },
+              });
+        }
         }
         catch(err){
             console.log(err)
             return err
         }
        },
-      
     }
    
 }
