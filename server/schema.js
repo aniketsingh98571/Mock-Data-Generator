@@ -24,7 +24,7 @@ export const typeDefs=`#graphql
     }
     input AddUserInput{
         name:String!,
-        profile_pic:String!
+        profile_pic:String
         title:String!
         socials:[String!]
         occupation:String!
