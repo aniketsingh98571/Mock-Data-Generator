@@ -97,7 +97,7 @@ const query = `
 `;
 
 const variables = {
-    id: Resource ID, // replace with your actual id,type-integer
+    id: 1, // replace with your actual id,type-integer
     key: 'API KEY' // replace with your actual key
 };
 
@@ -165,7 +165,7 @@ const mutation = `
 `;
 
 const variables = {
-    id: Resource ID, // replace with your actual id,type-integer
+    id: 1, // replace with your actual id,type-integer
     key: 'API KEY', // replace with your actual key
     user: {
         name: '<ANY NAME>', // replace with your actual name
