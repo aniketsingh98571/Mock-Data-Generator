@@ -191,3 +191,8 @@ fetch(BASE_URL, {
 ## Contact 📞
 
 If you have any questions, feel free to reach out!
+
+
+## Quick Notes
+1) GraphQL sits between a server and a client, you cannot have it as a layer between server and Database.
+2) In our case of Mocky, the apollo server is the GraphQL server(resolver), and from client we are accessing the data based on the defined schema of GraphQL.  
